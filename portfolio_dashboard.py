@@ -144,7 +144,7 @@ if choose=="Portfolio Dashboard":
     col1,col2,col3=st.columns(3)
     col1.metric("Total Deposit (€)",metrics["Deposit EU"].sum())
     col2.metric("Total Deposit ($)",metrics["Deposit US"].sum())
-    col3.metric("Total Current Value ($)",round(current_total,2))
+    col3.metric("Total Current Value ($)",round(current_total,2),round(portfolio_value["Total Value"].iloc[-1]-portfolio_value["Total Value"].iloc[-2],2))
     
     st.header("Total Stocks Value")
     last_date=portfolio_value.index[-1]
