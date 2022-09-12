@@ -218,7 +218,7 @@ elif choose=="Deposit/Stock modification":
         clear_btn=st.button("Clear the dataframe")
         if clear_btn:
             metrics=metrics[0:0]
-            metrics.to_pickle("/Users/louisteillet/Documents/Work/Projet info/Portfolio Dashboard/metrics_"+today+".pkl")    
+            metrics.to_pickle("/Users/louisteillet/Documents/Work/Projet info/Portfolio_site/metrics_"+today+".pkl")    
             st.success('The dataframe has been cleared', icon="✅")
         with st.form("my_form"):
             deposit_eu = st.number_input("How much do you want to depose in €?")
@@ -231,7 +231,7 @@ elif choose=="Deposit/Stock modification":
                 metrics.loc[deposit_date]=[deposit_eu,deposit_us]
                 
                 
-                metrics[["Deposit EU","Deposit US"]].to_pickle("/Users/louisteillet/Documents/Work/Projet info/Portfolio Dashboard/metrics_"+today+".pkl")    
+                metrics[["Deposit EU","Deposit US"]].to_pickle("/Users/louisteillet/Documents/Work/Projet info/Portfolio_site/metrics_"+today+".pkl")    
     
         
     
