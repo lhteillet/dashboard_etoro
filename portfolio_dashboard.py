@@ -65,7 +65,7 @@ end = dt.datetime.now()
 
 st.experimental_memo()
 def last_file_metrics():
-    list_of_metrics = glob.glob('/Users/louisteillet/Documents/Work/Projet info/Portfolio Dashboard/metrics*.pkl') # * means all if need specific format then *.csv
+    list_of_metrics = glob.glob('/Users/louisteillet/Documents/Work/Projet info/Portfolio_site/metrics*.pkl') # * means all if need specific format then *.csv
     latest_metrics = max(list_of_metrics, key=os.path.getctime)
     return latest_metrics
 metrics=pd.read_pickle(last_file_metrics())
@@ -74,25 +74,17 @@ metrics=pd.read_pickle(last_file_metrics())
 @st.cache(allow_output_mutation=True)
 def import_previous_data():
     #list_of_metrics = glob.glob('/Users/louisteillet/Documents/Work/Projet info/Portfolio Dashboard/metrics*.pkl') # * means all if need specific format then *.csv
-    list_of_portfolio = glob.glob('/Users/louisteillet/Documents/Work/Projet info/Portfolio Dashboard/portfolio_info*.pkl') # * means all if need specific format then *.csv
-    list_of_portfolio_value= glob.glob('/Users/louisteillet/Documents/Work/Projet info/Portfolio Dashboard/portfolio_value*.pkl') # * means all if need specific format then *.csv
-    #list_of_metrics=glob.glob('/Users/louisteillet/Documents/Work/Projet info/Portfolio Dashboard/metrics*.pkl')
-    
-    
+    list_of_portfolio = glob.glob('/Users/louisteillet/Documents/Work/Projet info/Portfolio_site/portfolio_info*.pkl') # * means all if need specific format then *.csv
+ 
     #latest_metrics = max(list_of_metrics, key=os.path.getctime)
     latest_portfolio = max(list_of_portfolio, key=os.path.getctime)
-    latest_portfolio_value = max(list_of_portfolio_value, key=os.path.getctime)
-    #latest_metrics=max(list_of_metrics, key=os.path.getctime)
     
-
-    #metrics=pd.read_pickle(latest_metrics)
     portfolio=pd.read_pickle(latest_portfolio)
-    portfolio_value=pd.read_pickle(latest_portfolio_value)
-    #metrics=pd.read_pickle(latest_metrics)
-    
-    return portfolio,portfolio_value
 
-portfolio,portfolio_value=import_previous_data()
+    
+    return portfolio
+
+portfolio=import_previous_data()
 
 @st.cache()
 def import_ticker_data(ticker_list):
@@ -126,6 +118,7 @@ def initialisation():
     portfolio_value=pd.merge(portfolio_value,abs(portfolio.set_index("Date ouverture")["Net Investi"]),left_index=True,right_index=True,how="left")
     portfolio_value["Net Investi"]=portfolio_value["Net Investi"].fillna(0).cumsum()
     portfolio_value["Cash Value"]=metrics["Deposit US"].sum()-portfolio_value["Net Investi"]
+    portfolio_value["Total Value"]= round(portfolio_value["Stocks Value"]+portfolio_value["Cash Value"],2)
     portfolio["Current Value"]= round(portfolio_value.iloc[-1]/portfolio["Unité"],2)
     current_total = portfolio_value["Cash Value"].iloc[-1]+portfolio_value["Stocks Value"].iloc[-1]
     
@@ -135,19 +128,14 @@ def initialisation():
     
 portfolio_value,list_ticker_data,current_total=initialisation()
 
-## Savings
-# @st.cache()
-# def save():
-#     print("SAVING")
-#     today=dt.date.today().strftime("%d_%m_%Y")
-#     metrics_df = pd.DataFrame({"Total Deposit EU":metrics["Deposit EU"].sum(),
-#                                              "Total Deposit US":metrics["Deposit US"].sum(),
-#                                              "Current Value":current_total},index=[today])
-#     portfolio.to_pickle("/Users/louisteillet/Documents/Work/Projet info/Portfolio Dashboard/portfolio_"+today+".pkl")
-#     portfolio_value.to_pickle("/Users/louisteillet/Documents/Work/Projet info/Portfolio Dashboard/portfolio_value_"+today+".pkl")
-#     #metrics_df.to_pickle("/Users/louisteillet/Documents/Work/Projet info/Portfolio Dashboard/metrics_"+today+".pkl")    
-    
-# save()  
+# Savings
+@st.cache()
+def save():
+    print("SAVING")
+    today=dt.date.today().strftime("%d_%m_%Y")
+    portfolio.to_pickle("/Users/louisteillet/Documents/Work/Projet info/Portfolio_site/portfolio_"+today+".pkl")
+   
+save()  
 
 #%%
 if choose=="Portfolio Dashboard":
@@ -216,7 +204,7 @@ if choose=="Portfolio Dashboard":
     st.header("Portfolio Composition")
     st.table(portfolio.dropna().sort_values(by="Date ouverture"))
     
-    st.table(portfolio_value)
+
     
     #/Users/louisteillet/Documents/Work/Projet info/Portfolio Dashboard/portfolio_dashboard.py
     
