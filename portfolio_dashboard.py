@@ -133,7 +133,7 @@ portfolio_value,list_ticker_data,current_total=initialisation()
 def save():
     print("SAVING")
     today=dt.date.today().strftime("%d_%m_%Y")
-    portfolio.to_pickle("/Users/louisteillet/Documents/Work/Projet info/Portfolio_site/portfolio_"+today+".pkl")
+    portfolio.to_pickle("/Users/louisteillet/Documents/Work/Projet info/Portfolio_site/portfolio_info_"+today+".pkl")
    
 save()  
 
